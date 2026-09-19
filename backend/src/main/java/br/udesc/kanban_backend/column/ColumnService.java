@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.LinkedList;
 import java.util.UUID;
 
 @Service
@@ -21,16 +22,22 @@ public class ColumnService {
 
     @Transactional(readOnly = true)
     public List<ColumnResponse> listByBoard(UUID boardId) {
-        // TODO 2: confirme que o quadro existe, consulte o repository em ordem
-        // de posição e converta as entidades para response.
-        throw new UnsupportedOperationException("TODO 2: listar colunas do quadro");
+        List aux = columnRepository.findByBoard_IdOrderByPositionAsc(boardId);
+        List resp = new LinkedList<ColumnResponse>();
+        for (int i = 0; i < aux.size(); i++) {
+            resp.add(toResponse((BoardColumn)aux.get(i)));
+        }
+        return resp;
     }
 
     @Transactional
     public ColumnResponse create(ColumnRequest request) {
-        // TODO 2: localize o quadro, remova espaços do nome, construa a coluna
-        // e persista antes de responder.
-        throw new UnsupportedOperationException("TODO 2: criar coluna");
+        System.out.println(request);
+        Board b = this.findBoard(request.boardId());
+        String name = request.name().trim();
+        BoardColumn newColumn = new BoardColumn(name,request.position(),b);
+        columnRepository.save(newColumn);
+        return toResponse(newColumn);
     }
 
     @Transactional

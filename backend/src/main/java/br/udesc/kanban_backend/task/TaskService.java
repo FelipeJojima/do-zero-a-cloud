@@ -29,8 +29,12 @@ public class TaskService {
 
     @Transactional(readOnly = true)
     public List<TaskResponse> listByColumn(UUID columnId) {
-        // TODO 3: confirme a coluna, consulte o repository e converta o resultado.
-        throw new UnsupportedOperationException("TODO 3: listar tarefas da coluna");
+        List aux = taskRepository.findByColumn_IdOrderByPositionAsc(columnId);
+        List resp = new ArrayList<TaskResponse>();
+        for (int i = 0; i < aux.size(); i++) {
+            resp.add(toResponse((KanbanTask)aux.get(i)));
+        }
+        return resp;
     }
 
     @Transactional
