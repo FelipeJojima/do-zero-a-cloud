@@ -28,8 +28,7 @@ public class TaskController {
 
     @GetMapping("/from/{columnId}")
     public List<TaskResponse> listByColumn(@PathVariable UUID columnId) {
-        // TODO 3: exponha a listagem das tarefas da coluna.
-        throw new UnsupportedOperationException("TODO 3: listar tarefas");
+        return taskService.listByColumn(columnId);
     }
 
     @PostMapping("/from/{columnId}")
@@ -37,8 +36,7 @@ public class TaskController {
             @PathVariable UUID columnId,
             @Valid @RequestBody CreateTaskRequest request
     ) {
-        // TODO 3: valide o body e delegue a criação para o service.
-        throw new UnsupportedOperationException("TODO 3: criar tarefa");
+        return taskService.create(columnId, request);
     }
 
     @PutMapping("/{taskId}")
@@ -46,13 +44,12 @@ public class TaskController {
             @PathVariable UUID taskId,
             @Valid @RequestBody UpdateTaskRequest request
     ) {
-        // TODO 3: valide o body e delegue a atualização para o service.
-        throw new UnsupportedOperationException("TODO 3: atualizar tarefa");
+        return taskService.update(taskId, request);
     }
 
     @DeleteMapping("/{taskId}")
     public ResponseEntity<StatusResponse> delete(@PathVariable UUID taskId) {
-        // TODO extra: exponha a exclusão de uma tarefa.
-        throw new UnsupportedOperationException("TODO extra: excluir tarefa");
+        taskService.delete(taskId);
+        return ResponseEntity.ok(new StatusResponse("Tarefa excluída com sucesso"));
     }
 }

@@ -39,20 +39,23 @@ public class TaskService {
 
     @Transactional
     public TaskResponse create(UUID columnId, CreateTaskRequest request) {
-        // TODO 3: valide URL e body, datas e tags; construa e persista a tarefa.
-        throw new UnsupportedOperationException("TODO 3: criar tarefa");
+        BoardColumn column = findColumn(columnId);
+        KanbanTask task = new KanbanTask(request.name(), request.position(), Instant.now(clock), request.dueDate(), request.completed(), normalizeTags(request.tags()), column);
+        return toResponse(taskRepository.save(task));
     }
 
     @Transactional
     public TaskResponse update(UUID taskId, UpdateTaskRequest request) {
-        // TODO 3: localize a tarefa, preserve createdAt, valide os dados e atualize.
-        throw new UnsupportedOperationException("TODO 3: atualizar tarefa");
+        KanbanTask task = findTask(taskId);
+        validateDueDate(task.getCreatedAt(), request.dueDate());
+        task.update(request.name(), request.position(), request.dueDate(), request.completed(), normalizeTags(request.tags()), findColumn(request.columnId()));
+        return toResponse(taskRepository.save(task));
     }
 
     @Transactional
     public void delete(UUID taskId) {
-        // TODO extra: localize a tarefa antes de excluí-la.
-        throw new UnsupportedOperationException("TODO extra: excluir tarefa");
+        KanbanTask task = findTask(taskId);
+        taskRepository.delete(task);
     }
 
     private List<String> normalizeTags(List<String> tags) {
